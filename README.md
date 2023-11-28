@@ -6,6 +6,6 @@ Terrafrom을 이용하여 인프라 구축하여 EKS Cluster 배포
 <br>
 <img src="https://github.com/pentonny/MSA-project/assets/98071871/eb560390-4ba8-48e7-b4b4-8b731950bbe5"/>
 <br>
-# src repository 링크 입니다.
+src repository 링크 입니다.
 <br>
 https://github.com/pentonny/ecommerce-workshop-src.git
