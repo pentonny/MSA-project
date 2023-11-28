@@ -1,6 +1,6 @@
 # IaC를 활용한 MSA 쇼핑몰 Terraform Project
 <br>
-## Terrafrom을 이용하여 인프라 구축하여 EKS Cluster 배포
+Terrafrom을 이용하여 인프라 구축하여 EKS Cluster 배포
 <br>
 아키텍처
 <br>
