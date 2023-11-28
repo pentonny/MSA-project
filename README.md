@@ -8,4 +8,4 @@ Terrafrom을 이용하여 인프라 구축하여 EKS Cluster 배포
 <br>
 src repository 링크 입니다.
 <br>
-[src-link](https://github.com/pentonny/ecommerce-workshop-src.git)
+[ src-link ](https://github.com/pentonny/ecommerce-workshop-src.git)
