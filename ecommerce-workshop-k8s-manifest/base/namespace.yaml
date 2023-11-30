@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ecommerce
+# ---
+
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: monitoring
+
+
+# ---
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: argocd
+# # apiVersion: v1
+# kind: ResourceQuota
+# metadata:
+#   name: example-quota
+#   namespace: ecommerce
+# spec:
+#   hard:
+#     requests.cpu: "1"
+#     requests.memory: 1Gi
+#     limits.cpu: "4"
+#     limits.memory: 4Gi
+#     pods: "100"
+#     services: "50"
+#     replicationcontrollers: "5"
+#     resourcequotas: "100"
+#     configmaps: "10"
+#     secrets: "10"
+#     persistentvolumeclaims: "4"
+
+
+
+
+# apiVersion: v1
+# kind: LimitRange
+# metadata:
+#   name: example-limitrange
+#   namespace: ecommerce
+# spec:
+#   limits:
+#     - type: Pod
+#       max:
+#         cpu: "2"
+#         memory: "1Gi"
+#       min:
+#         cpu: "100m"
+#         memory: "4Mi"

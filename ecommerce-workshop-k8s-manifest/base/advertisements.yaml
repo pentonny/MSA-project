@@ -1,0 +1,222 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   labels:
+#     tags.datadoghq.com/env: development
+#     tags.datadoghq.com/service: advertisements
+#     app: ecommerce
+#   name: advertisements
+#   namespace: ecommerce
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       tags.datadoghq.com/env: development
+#       tags.datadoghq.com/service: advertisements
+#       app: ecommerce
+#   strategy: {}
+#   template:
+#     metadata:
+#       creationTimestamp: null
+#       labels:
+#         tags.datadoghq.com/env: development
+#         tags.datadoghq.com/service: advertisements
+#         app: ecommerce
+#     spec:
+#       containers:
+#       - image: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/ads_v1:22faedff
+#         name: advertisements
+#         command: ["ddtrace-run"]
+#         args: ["flask", "run", "--port=5002", "--host=0.0.0.0"]
+#         env:
+#           - name: FLASK_APP
+#             value: "ads.py"
+#           - name: FLASK_DEBUG
+#             value: "1"
+#           - name: POSTGRES_PASSWORD
+#             valueFrom:
+#               secretKeyRef:
+#                 key: pw
+#                 name: db-password
+#           - name: POSTGRES_USER
+#             value: "user"
+#           - name: POSTGRES_HOST
+#             value: "db"
+#           - name: DD_ENV
+#             valueFrom:
+#               fieldRef:
+#                 fieldPath: metadata.labels['tags.datadoghq.com/env']
+#           - name: DD_SERVICE
+#             valueFrom:
+#               fieldRef:
+#                 fieldPath: metadata.labels['tags.datadoghq.com/service']
+#           - name: DD_AGENT_HOST
+#             valueFrom:
+#               fieldRef:
+#                 fieldPath: status.hostIP
+#           - name: DD_LOGS_INJECTION
+#             value: "true"
+#           - name: DD_ANALYTICS_ENABLED
+#             value: "true"
+#           - name: DD_PROFILING_ENABLED
+#             value: "true"
+#         ports:
+#         - containerPort: 5002
+#         resources:
+#           requests:
+#             cpu: 50m
+#             memory: 200Mi
+#           limits:
+#             cpu: 100m
+#             memory: 500Mi
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   labels:
+#     tags.datadoghq.com/service: advertisements
+#     tags.datadoghq.com/env: development
+#     app: ecommerce
+#   name: advertisements
+#   namespace: ecommerce
+# spec:
+#   ports:
+#   - port: 5002
+#     protocol: TCP
+#     targetPort: 5002
+#   selector:
+#     tags.datadoghq.com/service: advertisements
+#     tags.datadoghq.com/env: development
+#     app: ecommerce
+# status:
+
+# ---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  labels:
+    tags.datadoghq.com/env: development
+    tags.datadoghq.com/service: advertisements
+    app: ecommerce
+  name: advertisements
+  namespace: ecommerce
+  annotations:
+    notifications.argoproj.io/subscribe.on-rollout-step-completed.slack: 2mir-argocd-noti
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      tags.datadoghq.com/env: development
+      tags.datadoghq.com/service: advertisements
+      app: ecommerce
+  strategy: 
+    blueGreen: 
+      #activeService는 이전의 배포된 Blue 서비스
+      activeService: adv-rollout-bluegreen-active
+      
+      #previewService는 새롭게 배포될 Green 서비스
+      previewService: adv-rollout-bluegreen-preview
+      
+      #autoPromotioEnabled 옵션은 Blue/Green 배포를 자동으로 진행할 것인지 여부. false 옵션을 사용해 수동으로 지정
+      autoPromotionEnabled: false
+      
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        tags.datadoghq.com/env: development
+        tags.datadoghq.com/service: advertisements
+        app: ecommerce
+    spec:
+      containers:
+      - image: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/ads_v1:1a3d4c2e
+        name: advertisements
+        command: ["ddtrace-run"]
+        args: ["flask", "run", "--port=5002", "--host=0.0.0.0"]
+        env:
+          - name: FLASK_APP
+            value: "ads.py"
+          - name: FLASK_DEBUG
+            value: "1"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: pw
+                name: db-password
+          - name: POSTGRES_USER
+            value: "user"
+          - name: POSTGRES_HOST
+            value: "db"
+          - name: DD_ENV
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/env']
+          - name: DD_SERVICE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/service']
+          - name: DD_AGENT_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: DD_LOGS_INJECTION
+            value: "true"
+          - name: DD_ANALYTICS_ENABLED
+            value: "true"
+          - name: DD_PROFILING_ENABLED
+            value: "true"
+        ports:
+        - containerPort: 5002
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 1Gi
+        #   limits:
+        #     cpu: 200m
+        #     memory: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    tags.datadoghq.com/service: advertisements
+    tags.datadoghq.com/env: development
+    app: ecommerce
+  name: adv-rollout-bluegreen-active
+  namespace: ecommerce
+spec:
+  ports:
+  - port: 5002
+    protocol: TCP
+    targetPort: 5002
+    #nodePort: 30050
+  selector:
+    tags.datadoghq.com/service: advertisements
+    tags.datadoghq.com/env: development
+    app: ecommerce
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    tags.datadoghq.com/service: advertisements
+    tags.datadoghq.com/env: development
+    app: ecommerce
+  name: adv-rollout-bluegreen-preview
+  namespace: ecommerce
+spec:
+  ports:
+  - port: 5002
+    protocol: TCP
+    targetPort: 5002
+    #nodePort: 30050
+  selector:
+    tags.datadoghq.com/service: advertisements
+    tags.datadoghq.com/env: development
+    app: ecommerce
+
+
+

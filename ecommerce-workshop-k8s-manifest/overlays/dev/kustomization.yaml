@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+- name: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/ads_v1
+  newName: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/ads_v1
+  newTag: f72ecc8f
+- name: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/ads_v2
+  newName: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/ads_v2
+  newTag: ad98c2e0
+- name: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/discounts
+  newName: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/discounts
+  newTag: ad98c2e0
+- name: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/frontend
+  newName: 241825837502.dkr.ecr.ap-northeast-2.amazonaws.com/frontend
+  newTag: gold
+resources:
+- ../../base

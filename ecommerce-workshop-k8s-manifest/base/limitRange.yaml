@@ -1,0 +1,51 @@
+# apiVersion: v1
+# kind: LimitRange
+# metadata:
+#   name: argo-limitrange-pod
+#   namespace: argocd
+# spec:
+#   limits:
+#   - type: Pod 
+#     max:
+#       memory: 2048Mi 
+#       cpu: 2000m 
+#     min:
+#       memory: 128Mi 
+#       cpu: 125m 
+#     maxLimitRequestRatio:
+#       memory: 1.5
+#       cpu: 16
+
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: argocd-limits
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  limits:
+  - default:
+      cpu: 200m
+      memory: 512Mi
+    defaultRequest:
+      cpu: 50m
+      memory: 128Mi
+    type: Container
+
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: monitoring-limits
+  namespace: monitoring
+spec:
+  limits:
+  - default:
+      cpu: 1  # 프로메테우스에 필요한 CPU 리소스. 예시로 1 코어 설정
+      memory: 1Gi  # 프로메테우스에 필요한 메모리 리소스. 예시로 2기가바이트 설정
+    defaultRequest:
+      cpu: 50m  # 프로메테우스의 기본 CPU 요청량. 예시로 500m 설정
+      memory: 50Mi  # 프로메테우스의 기본 메모리 요청량. 예시로 1기가바이트 설정
+    type: Container

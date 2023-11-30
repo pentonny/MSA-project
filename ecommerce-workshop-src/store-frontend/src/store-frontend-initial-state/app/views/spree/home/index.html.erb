@@ -1,0 +1,34 @@
+<% @body_id = 'home-page' %>
+<% content_for :sidebar do %>
+  <% if @discounts && @discounts['name'] && @discounts['code'] && @discounts['value'] %>
+  <p>
+  <h3><%= @discounts['name'] %>!</h3><br />
+  <strong> 토요일에도 진짜 홍박사 '<%= @discounts['code']%>'
+  at checkout for a $<%= '%.2f' % @discounts['value'] %> discount</strong></p>
+<% else %>
+  <!-- @discounts 값이 없거나 필요한 정보가 누락된 경우에 "할인 정보가 없습니다" 문구를 표시합니다. -->
+  <p>할인 정보가 없습니다</p>
+<% end %>
+
+  <div data-hook="homepage_sidebar_navigation">
+    <%= render partial: 'spree/shared/taxonomies' %>
+  </div>
+<% end %>
+
+<div data-hook="homepage_products">
+<% if @ads && @ads['url'] && @ads['base64'] %>
+  <center>
+    <a href="<%= @ads['url'] %>">
+      <img src="data:image/png;base64,<%= @ads['base64'] %>" style="width: 825px;" />
+    </a>
+  </center>
+<% else %>
+  <!-- @ads가 없거나 필요한 정보가 누락된 경우에 "광고가 없습니다" 문구를 표시합니다. -->
+  <center>광고가 없습니다</center>
+<% end %>
+
+  <% cache(cache_key_for_products) do %>
+    <%= render partial: 'spree/shared/products', locals: { products: @products } %>
+  <% end %>
+</div>
+
