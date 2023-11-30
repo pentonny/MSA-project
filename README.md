@@ -4,7 +4,7 @@ Terrafrom을 이용하여 인프라 구축하여 EKS Cluster 배포
 <br>
 아키텍처
 <br>
-<img src="https://github.com/pentonny/MSA-project/assets/98071871/eb560390-4ba8-48e7-b4b4-8b731950bbe5"/>
+<img src="https://github.com/pentonny/MSA-project/assets/98071871/3d2f5031-f740-4376-8616-fce0e804aea2"/>
 <br>
 src repository 링크 입니다.
 <br>
